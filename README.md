@@ -5,9 +5,9 @@
 A simple, interactive script to properly install and integrate AppImages into your Linux desktop.
 <br />
 <br />
-<a href="https://github.com/YOUR_USERNAME/YOUR_REPO/issues">Report Bug</a>
+<a href="https://github.com/rishabh98080/AppImage-Installer-for-Ubuntu/issues">Report Bug</a>
 ·
-<a href="https://github.com/YOUR_USERNAME/YOUR_REPO/issues">Request Feature</a>
+<a href="https://github.com/rishabh98080/AppImage-Installer-for-Ubuntu/issues">Request Feature</a>
 </p>
 </div>
 
@@ -42,8 +42,8 @@ Clone the repository:
 
 Bash
 
-git clone https://github.com/YOUR_USERNAME/YOUR_REPO.git
-cd YOUR_REPO
+git clone https://github.com/rishabh98080/AppImage-Installer-for-Ubuntu.git
+cd AppImage-Installer-for-Ubuntu
 Create the runPython.sh script:
 This is a helper script to make running the installer easier. Create a file named runPython.sh and paste this code into it:
 
