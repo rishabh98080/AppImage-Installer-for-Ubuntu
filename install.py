@@ -6,7 +6,8 @@ import tempfile
 import subprocess
 import tkinter as tk
 from tkinter import filedialog, scrolledtext, font, messagebox, Listbox, END, SINGLE
-from tkinter import ttk # Import for Notebook (tabs)
+import ttkbootstrap as ttk
+from ttkbootstrap.constants import *
 
 def get_wm_class(appimage_path):
     """
@@ -33,12 +34,12 @@ def get_wm_class(appimage_path):
         except (subprocess.CalledProcessError, FileNotFoundError, subprocess.TimeoutExpired):
             return None
 
-class AppImageInstaller(tk.Tk):
+class AppImageInstaller(ttk.Window):
     """
-    A GUI application to install and uninstall AppImages.
+    A GUI application to install and uninstall AppImages using ttkbootstrap.
     """
     def __init__(self):
-        super().__init__()
+        super().__init__(themename="darkly")
 
         # --- Initial Checks ---
         if os.geteuid() == 0:
@@ -53,23 +54,14 @@ class AppImageInstaller(tk.Tk):
         self.home_dir = os.path.expanduser('~')
         self.install_base_dir = os.path.join(self.home_dir, '.local', 'bin')
         self.desktop_entry_dir = os.path.join(self.home_dir, '.local', 'share', 'applications')
-
-        # --- Style Configuration ---
-        self.style_config = {
-            "bg": "#2e2e2e", "fg": "#dcdcdc", "entry_bg": "#1e1e1e",
-            "button_bg": "#4a4a4a", "active_bg": "#5a5a5a",
-            "list_bg": "#1e1e1e", "list_select_bg": "#0078d7",
-            "success": "#4CAF50", "error": "#F44336"
-        }
-        self.configure(bg=self.style_config["bg"])
         self.log_font = font.Font(family="Consolas", size=10)
         
         # --- Tabbed Interface ---
-        self.notebook = ttk.Notebook(self)
+        self.notebook = ttk.Notebook(self, bootstyle="dark")
         self.notebook.pack(expand=True, fill='both', padx=10, pady=10)
 
-        self.install_tab = tk.Frame(self.notebook, bg=self.style_config["bg"])
-        self.uninstall_tab = tk.Frame(self.notebook, bg=self.style_config["bg"])
+        self.install_tab = ttk.Frame(self.notebook)
+        self.uninstall_tab = ttk.Frame(self.notebook)
 
         self.notebook.add(self.install_tab, text='Install AppImage')
         self.notebook.add(self.uninstall_tab, text='Uninstall AppImage')
@@ -77,29 +69,34 @@ class AppImageInstaller(tk.Tk):
         self.create_install_widgets()
         self.create_uninstall_widgets()
 
-    def button_styles(self, pady=5):
-        return {"bg": self.style_config["button_bg"], "fg": self.style_config["fg"], "activebackground": self.style_config["active_bg"], "activeforeground": self.style_config["fg"], "relief": tk.FLAT, "padx": 10, "pady": pady}
-
     # --- INSTALL TAB WIDGETS AND LOGIC ---
     def create_install_widgets(self):
         # --- Main Layout Frames ---
-        top_frame = tk.Frame(self.install_tab, bg=self.style_config["bg"])
+        top_frame = ttk.Frame(self.install_tab)
         top_frame.pack(fill=tk.X, padx=10, pady=10)
         
-        middle_frame = tk.Frame(self.install_tab, bg=self.style_config["bg"])
+        middle_frame = ttk.Frame(self.install_tab)
         middle_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
         
-        log_frame = tk.Frame(self.install_tab, bg=self.style_config["bg"])
+        log_frame = ttk.Frame(self.install_tab)
         log_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
 
         # --- Top Frame: AppImage Selection ---
-        tk.Label(top_frame, text="1. Select AppImage to Install:", bg=self.style_config["bg"], fg=self.style_config["fg"]).pack(anchor='w')
-        self.appimage_listbox = Listbox(top_frame, bg=self.style_config["list_bg"], fg=self.style_config["fg"], selectbackground=self.style_config["list_select_bg"], height=5, exportselection=False, relief=tk.FLAT)
+        ttk.Label(top_frame, text="1. Select AppImage to Install:").pack(anchor='w')
+        self.appimage_listbox = Listbox(top_frame, bg="#1e1e1e", fg="#dcdcdc", selectbackground="#0078d7", height=5, exportselection=False, relief=tk.FLAT)
         self.appimage_listbox.pack(fill=tk.X, expand=True, pady=5)
-        tk.Button(top_frame, text="Scan Current Directory for AppImages", command=self.scan_for_appimages, **self.button_styles()).pack(fill=tk.X)
+        
+        # --- New Button Frame for Scanning/Browsing ---
+        button_frame = ttk.Frame(top_frame)
+        button_frame.pack(fill=tk.X, pady=(5, 0))
+        button_frame.columnconfigure((0, 1, 2), weight=1)
+
+        ttk.Button(button_frame, text="Scan Current Dir", command=self.scan_current_dir, bootstyle="secondary-outline").grid(row=0, column=0, sticky='ew', padx=(0, 5))
+        ttk.Button(button_frame, text="Browse for File", command=self.browse_for_file, bootstyle="secondary-outline").grid(row=0, column=1, sticky='ew', padx=5)
+        ttk.Button(button_frame, text="Browse for Folder", command=self.browse_for_folder, bootstyle="secondary-outline").grid(row=0, column=2, sticky='ew', padx=(5, 0))
 
         # --- Middle Frame: User Inputs ---
-        tk.Label(middle_frame, text="2. Enter Application Details:", bg=self.style_config["bg"], fg=self.style_config["fg"]).grid(row=0, column=0, columnspan=3, sticky='w', pady=(10,5))
+        ttk.Label(middle_frame, text="2. Enter Application Details:").grid(row=0, column=0, columnspan=3, sticky='w', pady=(10,5))
         
         self.entries = {}
         self.fields = {
@@ -111,39 +108,39 @@ class AppImageInstaller(tk.Tk):
         }
         
         for i, (label, hint) in enumerate(self.fields.items()):
-            tk.Label(middle_frame, text=f"{label}:", bg=self.style_config["bg"], fg=self.style_config["fg"]).grid(row=i+1, column=0, sticky='w', padx=5, pady=5)
-            entry = tk.Entry(middle_frame, bg=self.style_config["entry_bg"], fg=self.style_config["fg"], insertbackground=self.style_config["fg"], relief=tk.FLAT, width=50)
+            ttk.Label(middle_frame, text=f"{label}:").grid(row=i+1, column=0, sticky='w', padx=5, pady=5)
+            entry = ttk.Entry(middle_frame, width=50)
             entry.grid(row=i+1, column=1, sticky='ew', pady=5)
             entry.insert(0, hint)
-            entry.config(fg='grey')
+            entry.config(foreground='grey')
             entry.bind("<FocusIn>", self.clear_placeholder)
             entry.bind("<FocusOut>", lambda e, l=label, h=hint: self.add_placeholder(e, l, h))
             self.entries[label] = entry
 
-        tk.Button(middle_frame, text="Browse...", command=self.browse_for_icon, **self.button_styles()).grid(row=3, column=2, padx=5)
-        tk.Button(middle_frame, text="Auto-Detect", command=self.autodetect_wm_class, **self.button_styles()).grid(row=5, column=2, padx=5)
+        ttk.Button(middle_frame, text="Browse...", command=self.browse_for_icon, bootstyle="info").grid(row=3, column=2, padx=5)
+        ttk.Button(middle_frame, text="Auto-Detect", command=self.autodetect_wm_class, bootstyle="info").grid(row=5, column=2, padx=5)
         middle_frame.grid_columnconfigure(1, weight=1)
 
         # --- Log Frame: Output & Install Button ---
-        tk.Label(log_frame, text="3. Install Progress:", bg=self.style_config["bg"], fg=self.style_config["fg"]).pack(anchor='w')
-        self.log_area = scrolledtext.ScrolledText(log_frame, wrap=tk.WORD, bg=self.style_config["entry_bg"], fg=self.style_config["fg"], font=self.log_font, relief=tk.FLAT, height=10)
+        ttk.Label(log_frame, text="3. Install Progress:").pack(anchor='w')
+        self.log_area = scrolledtext.ScrolledText(log_frame, wrap=tk.WORD, bg="#1e1e1e", fg="#dcdcdc", font=self.log_font, relief=tk.FLAT, height=10)
         self.log_area.pack(fill=tk.BOTH, expand=True, pady=5)
         self.log_area.config(state=tk.DISABLED)
-        tk.Button(log_frame, text="INSTALL APPLICATION", command=self.install_application, **self.button_styles(pady=10)).pack(fill=tk.X)
+        ttk.Button(log_frame, text="INSTALL APPLICATION", command=self.install_application, bootstyle="success").pack(fill=tk.X, ipady=5)
         
-        self.scan_for_appimages()
+        self.scan_current_dir() # Initial scan on startup
 
     def clear_placeholder(self, event):
         for label, widget in self.entries.items():
             if widget == event.widget and widget.get() == self.fields[label]:
                 widget.delete(0, END)
-                widget.config(fg=self.style_config["fg"])
+                widget.config(foreground=self.style.colors.fg)
                 break
 
     def add_placeholder(self, event, label, placeholder):
         if not event.widget.get():
             event.widget.insert(0, placeholder)
-            event.widget.config(fg='grey')
+            event.widget.config(foreground='grey')
 
     def log(self, message, level="info"):
         self.log_area.config(state=tk.NORMAL)
@@ -152,31 +149,59 @@ class AppImageInstaller(tk.Tk):
         self.log_area.see(END)
         self.update_idletasks()
 
-    def scan_for_appimages(self):
+    def scan_current_dir(self):
+        """Wrapper to scan the current directory."""
+        self.scan_for_appimages()
+
+    def scan_for_appimages(self, directory='.'):
+        """Scans a given directory for AppImages and populates the listbox."""
         self.appimage_listbox.delete(0, END)
-        self.log("🔍 Searching for AppImages in current directory...")
-        appimages = [f for f in os.listdir('.') if f.lower().endswith('.appimage')]
-        if not appimages:
-            self.log("❌ No AppImage files found.", "error")
-            return
-        for app in appimages:
-            self.appimage_listbox.insert(END, app)
-        self.log(f"✔️ Found {len(appimages)} AppImage(s).")
+        abs_dir = os.path.abspath(directory)
+        self.log(f"🔍 Searching for AppImages in: {abs_dir}")
+        try:
+            appimages = [os.path.join(abs_dir, f) for f in os.listdir(abs_dir) if f.lower().endswith('.appimage')]
+            if not appimages:
+                self.log("❌ No AppImage files found in the selected directory.", "error")
+                return
+            for app_path in appimages:
+                self.appimage_listbox.insert(END, app_path)
+            self.log(f"✔️ Found {len(appimages)} AppImage(s).")
+        except Exception as e:
+            self.log(f"❌ Error scanning directory: {e}", "error")
+
+    def browse_for_file(self):
+        """Opens a file dialog to select a single AppImage file."""
+        filepath = filedialog.askopenfilename(
+            title="Select an AppImage File",
+            filetypes=[("AppImage files", "*.appimage"), ("All files", "*.*")]
+        )
+        if filepath:
+            if filepath not in self.appimage_listbox.get(0, END):
+                self.appimage_listbox.insert(END, filepath)
+                self.log(f"➕ Added: {os.path.basename(filepath)}")
+            else:
+                self.log(f"⚠️ Already in list: {os.path.basename(filepath)}")
+
+    def browse_for_folder(self):
+        """Opens a directory dialog to scan a folder for AppImages."""
+        folder_path = filedialog.askdirectory(title="Select a Folder to Scan")
+        if folder_path:
+            self.scan_for_appimages(directory=folder_path)
 
     def browse_for_icon(self):
         filepath = filedialog.askopenfilename(title="Select an Icon File", filetypes=[("Image Files", "*.png *.svg *.ico"), ("All Files", "*.*")])
         if filepath:
             self.entries["Icon Path"].delete(0, END)
             self.entries["Icon Path"].insert(0, filepath)
-            self.entries["Icon Path"].config(fg=self.style_config["fg"])
+            self.entries["Icon Path"].config(foreground=self.style.colors.fg)
 
     def autodetect_wm_class(self):
         selection = self.appimage_listbox.curselection()
         if not selection:
             self.log("⚠️ Please select an AppImage from the list first.", "error")
             return
-        appimage_name = self.appimage_listbox.get(selection[0])
-        appimage_path = os.path.join(os.getcwd(), appimage_name)
+        appimage_path = self.appimage_listbox.get(selection[0])
+        appimage_name = os.path.basename(appimage_path)
         
         self.log(f"🔎 Trying to auto-detect 'StartupWMClass' for {appimage_name}...")
         wm_class = get_wm_class(appimage_path)
@@ -185,7 +210,7 @@ class AppImageInstaller(tk.Tk):
             self.log(f"✔️ Success! Found StartupWMClass: {wm_class}", "success")
             self.entries["StartupWMClass"].delete(0, END)
             self.entries["StartupWMClass"].insert(0, wm_class)
-            self.entries["StartupWMClass"].config(fg=self.style_config["fg"])
+            self.entries["StartupWMClass"].config(foreground=self.style.colors.fg)
         else:
             self.log("⚠️ Auto-detection failed. You may need to enter it manually.", "error")
 
@@ -198,7 +223,11 @@ class AppImageInstaller(tk.Tk):
         if not selection:
             self.log("❌ Error: Please select an AppImage to install.", "error")
             return
-        appimage_path_in = os.path.join(os.getcwd(), self.appimage_listbox.get(selection[0]))
+        
+        appimage_path_in = self.appimage_listbox.get(selection[0])
+        if not os.path.exists(appimage_path_in):
+            self.log(f"❌ Error: Source file not found at '{appimage_path_in}'", "error")
+            return
         
         permanent_name = self.entries["Short Name"].get().strip().replace(' ', '-')
         if not permanent_name or " " in permanent_name or permanent_name == self.fields["Short Name"]:
@@ -259,20 +288,20 @@ StartupNotify=true
 
     # --- UNINSTALL TAB WIDGETS AND LOGIC ---
     def create_uninstall_widgets(self):
-        self.installed_apps = {} # To map display names to permanent names
+        self.installed_apps = {} 
 
-        frame = tk.Frame(self.uninstall_tab, bg=self.style_config["bg"], padx=10, pady=10)
-        frame.pack(fill='both', expand=True)
+        frame = ttk.Frame(self.uninstall_tab)
+        frame.pack(fill='both', expand=True, padx=10, pady=10)
 
-        tk.Label(frame, text="Installed Applications:", bg=self.style_config["bg"], fg=self.style_config["fg"]).pack(anchor='w')
-        self.uninstall_listbox = Listbox(frame, bg=self.style_config["list_bg"], fg=self.style_config["fg"], selectbackground=self.style_config["list_select_bg"], height=15, exportselection=False, relief=tk.FLAT)
+        ttk.Label(frame, text="Installed Applications:").pack(anchor='w')
+        self.uninstall_listbox = Listbox(frame, bg="#1e1e1e", fg="#dcdcdc", selectbackground="#0078d7", height=15, exportselection=False, relief=tk.FLAT)
         self.uninstall_listbox.pack(fill='both', expand=True, pady=5)
 
-        button_frame = tk.Frame(frame, bg=self.style_config["bg"])
+        button_frame = ttk.Frame(frame)
         button_frame.pack(fill='x', pady=5)
 
-        tk.Button(button_frame, text="Scan for Installed Apps", command=self.scan_for_installed_apps, **self.button_styles()).pack(side='left', expand=True, fill='x')
-        tk.Button(button_frame, text="Uninstall Selected App", command=self.uninstall_application, **self.button_styles()).pack(side='left', expand=True, fill='x', padx=(10, 0))
+        ttk.Button(button_frame, text="Scan for Installed Apps", command=self.scan_for_installed_apps, bootstyle="secondary-outline").pack(side='left', expand=True, fill='x')
+        ttk.Button(button_frame, text="Uninstall Selected App", command=self.uninstall_application, bootstyle="danger").pack(side='left', expand=True, fill='x', padx=(10, 0))
         
         self.scan_for_installed_apps()
 
@@ -295,13 +324,12 @@ StartupNotify=true
                             if line.strip().startswith("Exec="):
                                 exec_path = line.strip().split("=", 1)[1].strip('"')
                     
-                    # Heuristic: check if it was installed by this tool
                     if self.install_base_dir in exec_path:
                         permanent_name = os.path.splitext(filename)[0]
                         self.installed_apps[display_name] = permanent_name
                         self.uninstall_listbox.insert(END, display_name)
                 except Exception:
-                    continue # Ignore malformed desktop files
+                    continue
 
     def uninstall_application(self):
         selection = self.uninstall_listbox.curselection()
@@ -320,26 +348,28 @@ StartupNotify=true
             return
 
         try:
-            # Delete the installation directory
             install_dir = os.path.join(self.install_base_dir, permanent_name)
             if os.path.isdir(install_dir):
                 shutil.rmtree(install_dir)
             
-            # Delete the .desktop file
             desktop_filepath = os.path.join(self.desktop_entry_dir, f"{permanent_name}.desktop")
             if os.path.exists(desktop_filepath):
                 os.remove(desktop_filepath)
 
             messagebox.showinfo("Success", f"'{display_name}' has been uninstalled successfully.")
-            self.scan_for_installed_apps() # Refresh the list
+            self.scan_for_installed_apps() 
 
         except Exception as e:
             messagebox.showerror("Uninstallation Error", f"An error occurred: {e}")
 
 if __name__ == "__main__":
     try:
+        # Before running, make sure you have ttkbootstrap installed:
+        # pip install ttkbootstrap
         app = AppImageInstaller()
         app.mainloop()
+    except ImportError:
+        messagebox.showerror("Missing Library", "Please install 'ttkbootstrap' to run this application.\n\nRun: pip install ttkbootstrap")
     except KeyboardInterrupt:
         sys.exit(0)
     except Exception as e:
