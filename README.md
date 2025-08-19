@@ -4,15 +4,17 @@
 A modern, graphical application to properly install, manage, and integrate AppImages into your Linux desktop.
 <br />
 <br />
-<a href="#">Report Bug</a>
+<a href="#"><strong>Report Bug</strong></a>
 ·
-<a href="#">Request Feature</a>
+<a href="#"><strong>Request Feature</strong></a>
 </p>
 <p align="center">
 <img alt="License" src="https://img.shields.io/badge/License-MIT-blue.svg">
 <img alt="Python" src="https://img.shields.io/badge/Python-3.x-blueviolet.svg">
 </p>
 </div>
+
+<hr>
 
 🎯 About The Project
 Hey there! So, you love AppImages, right? They're fantastic because they let you run applications on almost any Linux distribution without a complicated installation process. But let's be real, managing them—getting them to show up in your application menu, keeping them organized, and uninstalling them cleanly—is often a manual chore.
@@ -21,38 +23,59 @@ This project fixes that. It's a modern, graphical application that takes the gue
 
 (A screenshot of the application's interface would be perfect here!)
 
+<hr>
+
 ✨ Features in Detail
-✅ Modern & Intuitive GUI
+<table>
+<tr>
+<td width="50%" valign="top">
 
+<ul style="list-style: none; padding-left: 0;">
+<li style="margin-bottom: 15px;">
+<strong style="font-size: 1.1em;">✅ Modern & Intuitive GUI</strong><br>
 A clean, professional, dark-themed interface that is easy to navigate right from the start.
+</li>
+<li style="margin-bottom: 15px;">
+<strong style="font-size: 1.1em;">✅ Simple Tabbed Interface</strong><br>
+Split into <strong>Install</strong> and <strong>Uninstall</strong> tabs to keep the workspace uncluttered.
+</li>
+<li style="margin-bottom: 15px;">
+<strong style="font-size: 1.1em;">✅ Flexible File Discovery</strong><br>
+<ul>
+<li><strong>Automatic Scan:</strong> Scans the current folder on launch.</li>
+<li><strong>Browse for File:</strong> Add a single AppImage from anywhere.</li>
+<li><strong>Browse for Folder:</strong> Scan an entire directory at once.</li>
+</ul>
+</li>
+</ul>
 
-✅ Simple Tabbed Interface
+</td>
+<td width="50%" valign="top">
 
-The application is split into two main tabs: Install and Uninstall. This separation keeps the workspace uncluttered and makes the process for each task clear and straightforward.
+<ul style="list-style: none; padding-left: 0;">
+<li style="margin-bottom: 15px;">
+<strong style="font-size: 1.1em;">✅ Proper Desktop Integration</strong><br>
+Creates a standard <code>.desktop</code> file so your app appears in your system's application launcher.
+</li>
+<li style="margin-bottom: 15px;">
+<strong style="font-size: 1.1em;">✅ Smart WMClass Detection</strong><br>
+Includes an "Auto-Detect" feature to find the <code>StartupWMClass</code> for correct taskbar icons.
+</li>
+<li style="margin-bottom: 15px;">
+<strong style="font-size: 1.1em;">✅ Clean & Tidy Uninstaller</strong><br>
+Completely removes all associated files, including the app directory and its <code>.desktop</code> shortcut.
+</li>
+<li style="margin-bottom: 15px;">
+<strong style="font-size: 1.1em;">✅ Organized & Safe by Design</strong><br>
+Installs apps into <code>~/.local/bin/</code> and operates entirely within your home directory — <strong>no <code>sudo</code> required!</strong>
+</li>
+</ul>
 
-✅ Flexible File & Folder Discovery
+</td>
+</tr>
+</table>
 
-Automatic Scan on Launch: The application automatically scans the folder it's in when you first open it, immediately showing any available AppImages.
-
-Browse for File: Don't want to move your files? No problem. You can add a single AppImage from anywhere on your system.
-
-Browse for Folder: Have a dedicated folder for your AppImages? You can scan an entire directory at once to populate your list.
-
-✅ Proper Desktop Integration
-
-Creates a standard .desktop file in ~/.local/share/applications/. This is what allows your AppImage to appear in your system's application launcher (like the Activities menu in GNOME or the Start Menu in KDE) just like a natively installed app.
-
-✅ Smart WMClass Detection
-
-Includes an "Auto-Detect" feature to find the StartupWMClass. This is a crucial piece of information that helps your desktop environment match the running application window to its icon in the taskbar or dock. Without it, you might see a generic icon instead of the correct one.
-
-✅ Clean & Tidy Uninstaller
-
-The Uninstall tab scans for all applications installed by this tool. When you choose to uninstall an app, it completely removes all associated files, including the application directory and its .desktop shortcut, leaving your system clean.
-
-✅ Organized & Safe by Design
-
-Installs each application into its own neatly named folder inside ~/.local/bin/. This keeps your AppImages organized and out of the way. The entire process operates within your user's home directory, which means no sudo or root permissions are required, making it safer to use.
+<hr>
 
 🚀 How to Use It
 Getting started is incredibly simple. All you need is the executable file.
@@ -62,10 +85,13 @@ Download the AppImageManager executable file from the project's releases page.
 
 2. Run the Application
 To launch the manager, just run it from your terminal or by double-clicking it in your file manager.
+<br>
 
-./AppImageManager
+<pre style="background-color: #2d2d2d; padding: 10px; border-radius: 5px; border: 1px solid #444;"><code>./AppImageManager</code></pre>
 
 Troubleshooting Tip: If you get a "Permission denied" error, it means the file isn't marked as executable. You can fix this by running chmod +x AppImageManager in your terminal. You only need to do this once.
+
+<hr>
 
 🛠️ The Workflow
 To Install an App:
@@ -96,10 +122,14 @@ Select the App: Click on the application you wish to remove.
 
 Uninstall: Click Uninstall Selected App and confirm your choice in the pop-up dialog.
 
-And you're done! The app should now be available in (or removed from) your system's application menu. You might need to log out and back in for the menu to refresh.
+And you're done! The app should now be instantly available in (or removed from) your system's application menu. On some desktop environments, you might need to log out and back in for the menu to refresh.
+
+<hr>
 
 📜 A Note on the Source Code
 This release provides a standalone executable for ease of use. While this is the primary version being released, the project can always be improved in the future. The full Python source code is available in the project's repository for those who wish to view it, modify it, or contribute.
+
+<hr>
 
 🙌 Contributing
 Got ideas to make this better? Feel free to fork the repo and create a pull request, or open an issue with the "enhancement" tag.
@@ -113,6 +143,8 @@ Commit your Changes (git commit -m 'Add some AmazingFeature')
 Push to the Branch (git push origin feature/AmazingFeature)
 
 Open a Pull Request
+
+<hr>
 
 📄 License
 Distributed under the MIT License. See the LICENSE file for more information.
