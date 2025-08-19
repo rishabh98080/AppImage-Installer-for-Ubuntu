@@ -67,6 +67,8 @@ The Workflow
 To Install an App:
 Find Your AppImage: When you launch the app, it will automatically list any AppImages in the same folder. You can also use the Browse for File or Browse for Folder buttons to find AppImages located elsewhere on your system.
 
+Important Note: For an AppImage to be discoverable by the scanner, its filename must end with .AppImage. If you have an application that you know is an AppImage but it isn't showing up, simply rename the file to include the extension.
+
 Select the AppImage: Click on the AppImage you want to install from the list.
 
 Fill in the Details:
@@ -91,6 +93,9 @@ Select the App: Click on the application you wish to remove.
 Uninstall: Click Uninstall Selected App and confirm your choice in the pop-up dialog.
 
 And you're done! The app should now be available in (or removed from) your system's application menu. You might need to log out and back in for the menu to refresh.
+
+A Note on the Source Code
+This release provides a standalone executable for ease of use. While this is the primary version being released, the project can always be improved in the future. The full Python source code is available in the project's repository for those who wish to view it, modify it, or contribute.
 
 Contributing
 Got ideas to make this better? Feel free to fork the repo and create a pull request, or open an issue with the "enhancement" tag.
