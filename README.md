@@ -1,124 +1,96 @@
-<br/>
 <div align="center">
-<h1 align="center">AppImage Installer</h1>
+<h1 align="center">AppImage Manager GUI</h1>
 <p align="center">
-A simple, interactive script to properly install and integrate AppImages into your Linux desktop.
+A modern, graphical application to properly install, manage, and integrate AppImages into your Linux desktop.
 <br />
 <br />
-<a href="https://github.com/rishabh98080/AppImage-Installer-for-Ubuntu/issues">Report Bug</a>
+<a href="#">Report Bug</a>
 ·
-<a href="https://github.com/rishabh98080/AppImage-Installer-for-Ubuntu/issues">Request Feature</a>
+<a href="#">Request Feature</a>
 </p>
 </div>
 
 About The Project
-Hey there! So, you love AppImages, right? They're awesome because they let you run apps on almost any Linux distro without a messy installation. But let's be real, getting them to show up in your application menu and keeping them organized is a manual chore.
+Hey there! So, you love AppImages, right? They're fantastic because they let you run applications on almost any Linux distribution without a complicated installation process. But let's be real, managing them—getting them to show up in your application menu, keeping them organized, and uninstalling them cleanly—is often a manual chore.
 
-This project fixes that. It's a simple installer that takes an AppImage, gives it a permanent home, and creates a desktop shortcut for it. No more stashing AppImages in your Downloads folder!
+This project fixes that. It's a modern, graphical application that takes the guesswork out of AppImage management. It gives your AppImages a permanent, organized home and seamlessly integrates them into your desktop environment. No more hunting for AppImages in your Downloads folder!
 
-(A quick GIF showing the script running would be perfect here!)
+(A screenshot of the application's interface would be perfect here!)
 
-Features
-✅ Auto-Detection: Finds all .AppImage files in the current folder.
+Features in Detail
+✅ Modern & Intuitive GUI
 
-✅ Interactive & Friendly: A simple command-line menu guides you through the process.
+A clean, professional, dark-themed interface that is easy to navigate right from the start.
 
-✅ Proper Desktop Integration: Creates a .desktop file so your app appears in your Activities/Start Menu.
+✅ Simple Tabbed Interface
 
-✅ Clean & Organized: Installs each app into its own neat folder in ~/.local/bin/.
+The application is split into two main tabs: Install and Uninstall. This separation keeps the workspace uncluttered and makes the process for each task clear and straightforward.
 
-✅ Handles Permissions Correctly: Safely uses sudo for installation while ensuring all files are owned by you, not root.
+✅ Flexible File & Folder Discovery
 
-Getting Started
-Ready to get it running? It's super easy. Just follow these steps.
+Automatic Scan on Launch: The application automatically scans the folder it's in when you first open it, immediately showing any available AppImages.
 
-1. Prerequisites
-Make sure you have Python 3 installed. Most modern Linux distros have it by default.
+Browse for File: Don't want to move your files? No problem. You can add a single AppImage from anywhere on your system.
 
-2. Installation
-First, you'll need to get the files onto your system.
+Browse for Folder: Have a dedicated folder for your AppImages? You can scan an entire directory at once to populate your list.
 
-Clone the repository:
+✅ Proper Desktop Integration
 
-Bash
+Creates a standard .desktop file in ~/.local/share/applications/. This is what allows your AppImage to appear in your system's application launcher (like the Activities menu in GNOME or the Start Menu in KDE) just like a natively installed app.
 
-git clone https://github.com/rishabh98080/AppImage-Installer-for-Ubuntu.git
-cd AppImage-Installer-for-Ubuntu
-Create the runPython.sh script:
-This is a helper script to make running the installer easier. Create a file named runPython.sh and paste this code into it:
+✅ Smart WMClass Detection
 
-Bash
+Includes an "Auto-Detect" feature to find the StartupWMClass. This is a crucial piece of information that helps your desktop environment match the running application window to its icon in the taskbar or dock. Without it, you might see a generic icon instead of the correct one.
 
-#!/bin/bash
-# This script ensures the Python installer is executable and runs it with sudo.
+✅ Clean & Tidy Uninstaller
 
-# The name of the main Python installer script
-INSTALL_SCRIPT="install.py"
+The Uninstall tab scans for all applications installed by this tool. When you choose to uninstall an app, it completely removes all associated files, including the application directory and its .desktop shortcut, leaving your system clean.
 
-echo "Setting up the installer..."
+✅ Organized & Safe by Design
 
-# Make the Python script executable
-chmod +x "$INSTALL_SCRIPT"
+Installs each application into its own neatly named folder inside ~/.local/bin/. This keeps your AppImages organized and out of the way. The entire process operates within your user's home directory, which means no sudo or root permissions are required, making it safer to use.
 
-# Check if the script is being run with sudo, which is required
-if [ "$EUID" -ne 0 ]; then
-  echo "❌ Error: This installer needs to be run with root privileges."
-  echo "Please run it like this: sudo ./runPython.sh"
-  exit 1
-fi
+How to Use It
+Getting started is incredibly simple. All you need is the executable file.
 
-# Execute the Python script with sudo
-echo "🚀 Launching the AppImage Installer..."
-sudo python3 "$INSTALL_SCRIPT"
-Make the helper script executable:
-Run this command in your terminal to give runPython.sh permission to run.
+1. Download the Executable
+Download the AppImageManager executable file from the project's releases page.
 
-Bash
+2. Run the Application
+To launch the manager, just run it from your terminal or by double-clicking it in your file manager.
 
-chmod +x runPython.sh
-3. How to Use It
-Now for the fun part!
+./AppImageManager
 
-Move your files:
-Place the .AppImage file you want to install and its icon (e.g., a .png or .svg file) into the same folder as the scripts.
+Troubleshooting Tip: If you get a "Permission denied" error, it means the file isn't marked as executable. You can fix this by running chmod +x AppImageManager in your terminal. You only need to do this once.
 
-Run the installer:
-Execute the helper script with sudo.
+The Workflow
+To Install an App:
+Find Your AppImage: When you launch the app, it will automatically list any AppImages in the same folder. You can also use the Browse for File or Browse for Folder buttons to find AppImages located elsewhere on your system.
 
-Bash
+Select the AppImage: Click on the AppImage you want to install from the list.
 
-sudo ./runPython.sh
-Follow the on-screen prompts:
-The script will ask you to:
+Fill in the Details:
 
-Choose the AppImage from a list it finds in the folder.
+Short Name: A simple, one-word name (e.g., obsidian). This is a critical field, as it will be used for the folder and executable name.
 
-Enter a permanent name for the app (e.g., obsidian, bitwarden). This will be used for the folder and file names.
+Display Name: The full name that will appear in your app menu (e.g., Obsidian).
 
-Provide the full path to the icon file.
+Icon Path: Click Browse... to select a .png or .svg icon file for your app.
 
-Enter a display name (what you'll see in the app menu) and a short description.
+StartupWMClass: Click Auto-Detect. The tool will try to extract this automatically. This is highly recommended for ensuring your app has the correct icon when running.
 
-And you're done! The app should now be available in your system's application menu. You might need to log out and back in for the menu to refresh.
+Install: Click the big green INSTALL APPLICATION button. The log window will show you the progress, and a pop-up will confirm when it's done!
 
-How It Works Under the Hood
-For those who are curious, here’s what the script is doing:
+To Uninstall an App:
+Switch Tabs: Go to the Uninstall AppImage tab.
 
-Gets Sudo User Info: When you run the script with sudo, it cleverly figures out who you, the original user, are (e.g., ubuntu, not root). This is crucial for setting the right file ownership.
+Scan for Apps: Click Scan for Installed Apps. The list will populate with all the apps you've previously installed with this tool.
 
-Creates a Home for the App: It makes a new, dedicated folder for your application at ~/.local/bin/your-app-name/.
+Select the App: Click on the application you wish to remove.
 
-Copies and Prepares Files:
+Uninstall: Click Uninstall Selected App and confirm your choice in the pop-up dialog.
 
-The AppImage is copied into the new folder and renamed to your-app-name.
-
-The icon is also copied into this folder.
-
-The AppImage is made executable (chmod 755).
-
-Builds the Shortcut: It generates a .desktop file and places it in ~/.local/share/applications/. This is the standard location for user-specific application shortcuts. This file tells your desktop environment the app's name, description, where to find its executable, and which icon to use.
-
-Sets Ownership: Finally, it ensures that all the newly created files and folders are owned by you, so you won't have any permission issues later.
+And you're done! The app should now be available in (or removed from) your system's application menu. You might need to log out and back in for the menu to refresh.
 
 Contributing
 Got ideas to make this better? Feel free to fork the repo and create a pull request, or open an issue with the "enhancement" tag.
@@ -134,4 +106,4 @@ Push to the Branch (git push origin feature/AmazingFeature)
 Open a Pull Request
 
 License
-Distributed under the MIT License. See LICENSE file for more information.
+Distributed under the MIT License. See the LICENSE file for more information.
